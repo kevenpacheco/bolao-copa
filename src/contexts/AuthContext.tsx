@@ -3,6 +3,8 @@ import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
 
+import { api } from "../services/api";
+
 WebBrowser.maybeCompleteAuthSession();
 
 interface UserProps {
@@ -37,7 +39,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setIsUserLoading(true);
       await promptAsync();
-
     } catch (error) {
       console.log(error);
       throw error;
@@ -47,14 +48,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   async function signInWithGoogle(access_token: string) {
-    console.log('TOKEN DE AUTENTICAÇÃO ===> ', access_token)
+    try {
+      setIsUserLoading(true);
+
+      const {
+        data: { token },
+      } = await api.post("/users", { access_token });
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      const userInfoResponse = await api.get('/me');
+      setUser(userInfoResponse.data.user);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    } finally {
+      setIsUserLoading(false);
+    }
   }
 
   useEffect(() => {
-    if (response?.type === 'success' && response.authentication?.accessToken) {
-      signInWithGoogle(response.authentication.accessToken)
+    if (response?.type === "success" && response.authentication?.accessToken) {
+      signInWithGoogle(response.authentication.accessToken);
     }
-  }, [response])
+  }, [response]);
 
   return (
     <AuthContext.Provider
