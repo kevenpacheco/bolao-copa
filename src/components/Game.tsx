@@ -49,13 +49,15 @@ export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessCon
       p={4}
       opacity={isGameOver ? 0.5 : 1}
     >
-      <Box bgColor="red.500" px={2} rounded="sm">
-        <Text
-          color="gray.100"
-        >
-          Jogo encerrado
-        </Text>
-      </Box>
+      {isGameOver && (
+        <Box bgColor="red.500" px={2} rounded="sm">
+          <Text
+            color="gray.100"
+          >
+            Jogo encerrado
+          </Text>
+        </Box>
+      )}
 
       <Text color="gray.100" fontFamily="heading" fontSize="sm">
         {getName(data.firstTeamCountryCode)} vs. {getName(data.secondTeamCountryCode)}
