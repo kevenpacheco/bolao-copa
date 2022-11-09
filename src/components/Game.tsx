@@ -1,4 +1,4 @@
-import { Button, HStack, Text, useTheme, VStack } from 'native-base';
+import { Box, Button, HStack, Text, useTheme, VStack } from 'native-base';
 import { X, Check } from 'phosphor-react-native';
 import { getName } from 'country-list';
 import dayjs from 'dayjs';
@@ -35,6 +35,8 @@ export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessCon
 
   const when = dayjs(data.date).locale(ptBR).format("DD [de] MMMM [de] YYYY [ás] HH:mm[h]");
 
+  const isGameOver = new Date(data.date) < new Date();
+
   return (
     <VStack
       w="full"
@@ -45,7 +47,16 @@ export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessCon
       borderBottomColor="yellow.500"
       mb={3}
       p={4}
+      opacity={isGameOver ? 0.5 : 1}
     >
+      <Box bgColor="red.500" px={2} rounded="sm">
+        <Text
+          color="gray.100"
+        >
+          Jogo encerrado
+        </Text>
+      </Box>
+
       <Text color="gray.100" fontFamily="heading" fontSize="sm">
         {getName(data.firstTeamCountryCode)} vs. {getName(data.secondTeamCountryCode)}
       </Text>
@@ -59,6 +70,7 @@ export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessCon
           code={data.firstTeamCountryCode}
           position="right"
           onChangeText={setFirstTeamPoints}
+          isGameOver={isGameOver}
         />
 
         <X color={colors.gray[300]} size={sizes[6]} />
@@ -67,11 +79,12 @@ export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessCon
           code={data.secondTeamCountryCode}
           position="left"
           onChangeText={setSecondTeamPoints}
+          isGameOver={isGameOver}
         />
       </HStack>
 
       {
-        !data.guess &&
+        (!isGameOver && !data.guess) &&
         <Button size="xs" w="full" bgColor="green.500" mt={4} onPress={onGuessConfirm}>
           <HStack alignItems="center">
             <Text color="white" fontSize="xs" fontFamily="heading" mr={3}>

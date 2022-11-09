@@ -1,4 +1,4 @@
-import { Box, FlatList, useToast } from "native-base";
+import { FlatList, useToast } from "native-base";
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { EmptyMyPoolList } from "./EmptyMyPoolList";
@@ -48,7 +48,7 @@ export function Guesses({ poolId, code }: Props) {
 
       setIsLoading(true);
 
-      const response = await api.post(
+      await api.post(
         `/pools/${poolId}/games/${gameId}/guesses`,
         {
           firstTeamPoints: Number(firstTeamPoints),
