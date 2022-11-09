@@ -7,10 +7,11 @@ interface Props {
   code: string;
   position: 'left' | 'right';
   isGameOver?: boolean;
+  guess?: number;
   onChangeText: (value: string) => void;
 }
 
-export function Team({ code, position, isGameOver, onChangeText }: Props) {
+export function Team({ code, position, isGameOver, guess, onChangeText }: Props) {
   return (
     <HStack alignItems="center">
       {position === 'left' && <CountryFlag isoCode={code} size={25} style={{ marginRight: 12 }} />}
@@ -22,7 +23,8 @@ export function Team({ code, position, isGameOver, onChangeText }: Props) {
         fontSize="xs"
         keyboardType="numeric"
         onChangeText={onChangeText}
-        isDisabled={isGameOver}
+        isDisabled={isGameOver || !!guess}
+        defaultValue={guess ? String(guess) : ''}
       />
 
       {position === 'right' && <CountryFlag isoCode={code} size={25} style={{ marginLeft: 12 }} />}
