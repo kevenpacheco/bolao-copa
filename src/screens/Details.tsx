@@ -9,6 +9,7 @@ import { Loading } from "../components/Loading";
 import { Option } from "../components/Option";
 import { PoolCardProps } from "../components/PoolCard";
 import { PoolHeader } from "../components/PoolHeader";
+import { Ranking } from "../components/Ranking";
 import { api } from "../services/api";
 
 interface RouteParams {
@@ -17,11 +18,17 @@ interface RouteParams {
 
 export function Details() {
   const [isLoading, setIsLoading] = useState(true);
-  const [optionSelected, setOptionSelected] = useState<"guesses" | "ranking">(
-    "guesses"
-  );
   const [poolDetails, setPoolDetails] = useState<PoolCardProps>(
     {} as PoolCardProps
+  );
+  
+  const SCREEN_SECTION_MAPPER = {
+    guesses: <Guesses poolId={poolDetails.id} code={poolDetails.code} />,
+    ranking: <Ranking />,
+  };
+
+  const [currentScreenSection, setCurrentScreenSection] = useState<keyof typeof SCREEN_SECTION_MAPPER>(
+    "guesses"
   );
 
   const toast = useToast();
@@ -63,7 +70,12 @@ export function Details() {
 
   return (
     <VStack flex={1} bgColor="gray.900">
-      <Header title={poolDetails.title} showBackButton showShareButton onShare={handleCodeShare}/>
+      <Header
+        title={poolDetails.title}
+        showBackButton
+        showShareButton
+        onShare={handleCodeShare}
+      />
 
       {poolDetails._count?.participants > 0 ? (
         <VStack px={5} flex={1}>
@@ -72,18 +84,18 @@ export function Details() {
           <HStack bgColor="gray.800" p={1} rounded="sm" mb={5}>
             <Option
               title="Seus palpites"
-              isSelected={optionSelected === "guesses"}
-              onPress={() => setOptionSelected("guesses")}
+              isSelected={currentScreenSection === "guesses"}
+              onPress={() => setCurrentScreenSection("guesses")}
             />
 
             <Option
               title="Ranking do grupo"
-              isSelected={optionSelected === "ranking"}
-              onPress={() => setOptionSelected("ranking")}
+              isSelected={currentScreenSection === "ranking"}
+              onPress={() => setCurrentScreenSection("ranking")}
             />
           </HStack>
 
-          <Guesses poolId={poolDetails.id} code={poolDetails.code} />
+          {SCREEN_SECTION_MAPPER[currentScreenSection]}
         </VStack>
       ) : (
         <EmptyMyPoolList code={poolDetails.code} />
