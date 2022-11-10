@@ -23,7 +23,10 @@ model Pool {
 }
 
 model Participant {
-  id     String @id @default(cuid())
+  id String @id @default(cuid())
+
+  points Int @default(0)
+
   userId String
   poolId String
 

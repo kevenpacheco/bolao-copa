@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient();
 
 (async function main() {
-  const user = await prisma.user.create({
+  const user1 = await prisma.user.create({
     data: {
       name: 'John Doe',
       email: 'john.doe@example.com',
@@ -11,16 +11,79 @@ const prisma = new PrismaClient();
     }
   })
 
+  const user2 = await prisma.user.create({
+    data: {
+      name: 'Diego Fernandes',
+      email: 'diego.fernandes@example.com',
+      avatarUrl: 'https://github.com/diego3g.png'
+    }
+  })
+
+  const user3 = await prisma.user.create({
+    data: {
+      name: 'Filipe Deschamps',
+      email: 'filipe.deschamps@example.com',
+      avatarUrl: 'https://github.com/filipedeschamps.png'
+    }
+  })
+
+  const user4 = await prisma.user.create({
+    data: {
+      name: 'Mayk Brito',
+      email: 'mayk.brito@example.com',
+      avatarUrl: 'https://github.com/maykbrito.png'
+    }
+  })
+
+  const user5 = await prisma.user.create({
+    data: {
+      name: 'Rodrigo Gonçalves',
+      email: 'rodrigo.goncalves@example.com',
+      avatarUrl: 'https://github.com/rodrigorgtic.png'
+    }
+  })
+
+  const user6 = await prisma.user.create({
+    data: {
+      name: 'Jakeliny Gracielly',
+      email: 'jakeliny.gracielly@example.com',
+      avatarUrl: 'https://github.com/jakeliny.png'
+    }
+  })
+
   const pool = await prisma.pool.create({
     data: {
       title: 'Exemple Pool',
       code: 'BOL123',
-      ownerId: user.id,
+      ownerId: user1.id,
 
       participants: {
-        create: {
-          userId: user.id,
-        }
+        create: [
+          {
+            userId: user1.id,
+            points: 54
+          },
+          {
+            userId: user2.id,
+            points: 39
+          },
+          {
+            userId: user3.id,
+            points: 78
+          },
+          {
+            userId: user4.id,
+            points: 37
+          },
+          {
+            userId: user5.id,
+            points: 10
+          },
+          {
+            userId: user6.id,
+            points: 27
+          },
+        ]
       }
     }
   })
@@ -47,7 +110,7 @@ const prisma = new PrismaClient();
           participant: {
             connect: {
               userId_poolId: {
-                userId: user.id,
+                userId: user1.id,
                 poolId: pool.id
               }
             }
@@ -79,7 +142,7 @@ const prisma = new PrismaClient();
           participant: {
             connect: {
               userId_poolId: {
-                userId: user.id,
+                userId: user1.id,
                 poolId: pool.id
               }
             }
