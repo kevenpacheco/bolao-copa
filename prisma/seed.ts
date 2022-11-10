@@ -56,4 +56,36 @@ const prisma = new PrismaClient();
       }
     }
   })
+
+  await prisma.game.create({
+    data: {
+      date: '2023-11-02T12:00:00.201Z',
+      firstTeamCountryCode: 'CL',
+      secondTeamCountryCode: 'CO',
+    }
+  })
+
+  await prisma.game.create({
+    data: {
+      date: '2023-11-03T12:00:00.201Z',
+      firstTeamCountryCode: 'FR',
+      secondTeamCountryCode: 'ES',
+
+      guesses: {
+        create: {
+          firstTeamPoints: 2,
+          secondTeamPoints: 1,
+
+          participant: {
+            connect: {
+              userId_poolId: {
+                userId: user.id,
+                poolId: pool.id
+              }
+            }
+          }
+        }
+      }
+    }
+  })
 })()
