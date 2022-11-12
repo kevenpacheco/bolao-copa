@@ -1,39 +1,53 @@
-import {
-  Avatar,
-  Center,
-  FlatList,
-  HStack,
-  Text,
-  VStack,
-} from "native-base";
+import { FlatList, useToast } from "native-base";
+import { useEffect, useState } from "react";
+import { api } from "../services/api";
 
 import { EmptyRakingList } from "./EmptyRakingList";
-import { RankingCard } from "./RankingCard";
+import { Loading } from "./Loading";
+import { ParticipantRankingType, RankingCard } from "./RankingCard";
 
-export function Ranking() {
-  const ranking = [
-    {
-      participant: {
-        id: "awdwad",
-        user: {
-          avatarUrl: "https://github.com/kevenpacheco.png",
-          name: "Keven Pacheco",
-        },
-      },
-      points: 30,
-    },
-  ];
+interface RankingPropType {
+  poolId: string;
+}
+
+export function Ranking({ poolId }: RankingPropType) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [ranking, setRanking] = useState<ParticipantRankingType[]>([]);
+
+  const toast = useToast();
+
+  async function fetchCurrentPoolRanking() {
+    try {
+      setIsLoading(true);
+
+      const response = await api.get(`/pools/${poolId}/ranking`);
+      setRanking(response.data.ranking);
+    } catch (error) {
+      console.log(error);
+      toast.show({
+        title: "Não foi possível carregar o ranking",
+        placement: "top",
+        bgColor: "red.500",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchCurrentPoolRanking();
+  }, [poolId]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <FlatList
       data={ranking}
-      keyExtractor={(item) => item.participant.id}
+      keyExtractor={(item) => item.userId}
       renderItem={({ item, index }) => (
-        <RankingCard
-          participant={item.participant}
-          points={item.points}
-          rankingPosition={index + 1}
-        />
+        <RankingCard participant={item} rankingPosition={index + 1} />
       )}
       _contentContainerStyle={{ pb: 10 }}
       ListEmptyComponent={() => <EmptyRakingList />}

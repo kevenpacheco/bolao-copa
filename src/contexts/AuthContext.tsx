@@ -10,6 +10,7 @@ WebBrowser.maybeCompleteAuthSession();
 interface UserProps {
   name: string;
   avatarUrl: string;
+  sub: string;
 }
 
 interface AuthProviderProps {

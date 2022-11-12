@@ -1,14 +1,27 @@
 import { Avatar, Center, HStack, Text, VStack } from "native-base";
-import { ParticipantProps } from "./Participants";
+import { useAuth } from "../hooks/useAuth";
 
+export interface ParticipantRankingType {
+  userId: string;
+  user: {
+    name: string;
+    avatarUrl: string;
+  };
+  points: number;
+}
 interface RankingCardProps {
-  participant: ParticipantProps,
-  rankingPosition: number,
-  points: number,
+  participant: ParticipantRankingType;
+  rankingPosition: number;
 }
 
-export function RankingCard({participant, rankingPosition, points}: RankingCardProps) {
-  const isTopThree = rankingPosition <= 3
+export function RankingCard({
+  participant,
+  rankingPosition,
+}: RankingCardProps) {
+  const { user } = useAuth();
+
+  const isTopThree = rankingPosition <= 3;
+  const isCurrentUser = participant.userId === user.sub;
 
   return (
     <HStack
@@ -35,10 +48,16 @@ export function RankingCard({participant, rankingPosition, points}: RankingCardP
 
         <VStack ml={3}>
           <Text color="white" fontWeight="bold">
-            {participant.user.name}
+            {participant.user.name}{" "}
+            {isCurrentUser && (
+              <Text color="gray.300" fontWeight="bold" fontSize="xs">
+                (você)
+              </Text>
+            )}
           </Text>
+
           <Text color="gray.200" fontSize="xs">
-            {points} ponto(s)
+            {participant.points} ponto(s)
           </Text>
         </VStack>
       </HStack>

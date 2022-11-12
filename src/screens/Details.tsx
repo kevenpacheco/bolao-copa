@@ -24,7 +24,7 @@ export function Details() {
   
   const SCREEN_SECTION_MAPPER = {
     guesses: <Guesses poolId={poolDetails.id} code={poolDetails.code} />,
-    ranking: <Ranking />,
+    ranking: <Ranking poolId={poolDetails.id}/>,
   };
 
   const [currentScreenSection, setCurrentScreenSection] = useState<keyof typeof SCREEN_SECTION_MAPPER>(

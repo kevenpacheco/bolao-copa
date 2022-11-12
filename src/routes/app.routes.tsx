@@ -23,13 +23,11 @@ export function AppRoutes() {
         tabBarActiveTintColor: colors.yellow[500],
         tabBarInactiveTintColor: colors.gray[300],
         tabBarStyle: {
-          position: "absolute",
           height: sizes[22],
           borderTopWidth: 0,
           backgroundColor: colors.gray[800],
         },
         tabBarItemStyle: {
-          position: "relative",
           top: Platform.OS === "android" ? -10 : 0,
         },
       }}
